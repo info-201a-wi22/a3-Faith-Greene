@@ -1,0 +1,49 @@
+---
+title: "Incarceration: A rudimenty use of intersectionality"
+author: "Faith Greene"
+date: "2/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning= FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+  America has a problem with its prisons, that is not up for debate here. Nor is the fact that the issue clearly lies along racial lines. So what, then, am I here to explore? I desire to see how this racial problem intersects with gender and area wealth. Unfortunately this dataset leaves little tools in this regard, while nearly all prison variable disaggragated by gender, they include only two categories and admit that 1. their numbers may be off and sum higher that recorded prison/jail pop and 2. they do not track incarceration rates of transgender people, so a full examination of how gender intersects with this issue isn't possible, but this should provide a starting point. And as for area wealth, there is nothing reporting that in the data set, only categories of "Rural", "small/mid", "suburban", and "urban" which is not useful in this regard, and thus I am relegating this part of analysis to a map, that may be used in conjunction with other data, rather than draw conclusions from this alone.
+  Now that caveats are out of the way, we can begin. I assembed this chart containing summary information of prison population and total population and some observations of it.
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+  source("../source/data-manipulation.r")
+  library("knitr")
+  to_show <- select(together_with_percentage, c("race", "avg_total_pop", "avg_male_pop",	"avg_female_pop",	"percent_deviation_from_avg_male",	"percent_deviation_from_avg_female"))
+  kable(to_show)
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+source("../source/data-manipulation.r")
+to_show <- select(together_with_percentage, c("race", "avg_total_pop", "total_non_prison_pop",	"percent_in_prison"))
+kable(to_show)
+```
+  Looking at this chart, I note a few things, first the averages I recorded for racial prison populations seem small, only 7 for native americans and asian and pacific islanders on average, which strikes me as odd as they aren't even close to each other in avg total populations, but since in a lot cases there is no data for prisons, which screws with the averages. As for a gender bias, we can see that there is a clear bias towards men being in prison, women are consistantly below the average and men are consistently above the average. Likewise a racial bias is obvious as white people are incarcerated an order of magnitidue less as a percentage of their population. Oddly enough, asian and pacific islanders are also an order of magnitude, creating a potential avenue for further research. Of course these are averages, so the following charts should paint a better picture than this table.
+  
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+  source("../source/data-manipulation.r")
+  to_show2 <- black_incarseration_over_time
+  to_show2
+```
+  
+Now while it would be interesting to look into the gender and incarceration for all of the provided racial categories, having it all on one graph would be a little difficult to read, and not in a 'helps dive home a point' way. So I decided to go with the obvious idea and look into African American incarceration by year and gender. And two things become clear quickly: first, there was a massive jump in incarceration in the 90s, and while it's dropped a bit, it's still way too high, and second, the gender bias is extremely high. I am ashamed to admit my knowledge of us history in the 90s is woefully inadequate to give a reason for the jump, but I expect it to be a result of legislation passed that lead to more arrests. To figure out if the jump was racial, the next step would be to do this graph for the other racial categories, but given the scope of this assignment, that is something for another day.
+  
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+  source("../source/data-manipulation.r")
+  to_show3 <- black_incarserations_compared_to_pop
+  to_show3
+```
+Now my intent behind this graph was to see if population size had any bearing on the rate of African Americans incarcerated, and then extrapolate area wealth based on population. Which is a bad idea, but does give a basis for the following map, but even with that, it's mostly unusable. The idea was that if the line wasn't linear, then that means population has some correlation with incarceration, but any analysis on this is not possible, because the graph is just missing data for counties between a population of six hundred thousand and 1.2 million. When I called na.omit() on the data, I was not expecting this outcome, I was expecting a more even distribution of missing data among county populations. Sadly this means the smooth function doesn't help too much, but there is one trend that caught my eye, a sharp jump around 500000 people, and I don't know why. It could just be a fluke, but it might help with the map.
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+source("../source/data-manipulation.r")
+to_show4 <- map
+to_show4
+```
+Sadly this map didn't turn out to be as helpful as I hoped, too many counties didn't report either population of African Americans in the the county or in prison, meaning a percentage was unable to be calculated. Now I decided for a particular year, because trying to do averages over all years would have been messy and lead to pecentages over 100, so a snapshot of year seemed most useful. Now 2012 is *mostly* arbritrary, I was originaly planing to do 2020, but no data exists, 2018 had the same problem, 2010 had a weird outlire in a nabraskan county where they reported more African Americans in prison than in the county, which while something neat to analyze, meant the scale of the graph made the rest unusable, so I chose 2012 as it is somewhat recent and didn't produce weird outliers. But the graph shows some interesting trends. Of what's there, it's mostly uniform but the few places with a really high precentage all lie in the south and midwest, a trend that doesn't suprise me, but is noteworthy nonetheless. Now other really interesting trend is where the data ***isn't***, you can clearly see the outlines of Arkansas, Louisana, Virgina, Idaho, Montana, and Conneticut, showing that the whole of these states had some sort of reporting problem in 2012. 
+# Conclusion
+Now I can't really draw conclusions from this breif analysis, I am not enough of a scholar in these issues and have not explored the data enough to do so without vastly misunderstand key issues. But I can offer the following, in somewhat confidence: There is a clear racial and gender bias in imprisonment in the United States, and many counties are failing to report information needed to get a handle on this issue. 
